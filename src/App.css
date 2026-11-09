@@ -1,0 +1,9 @@
+.site-background {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem 1rem;
+  background-color: #322028;
+}

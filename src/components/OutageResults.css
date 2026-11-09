@@ -1,0 +1,202 @@
+/* Shared styles for the outage results panels (confirm + recommend) */
+
+.outage-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-height: 100%;
+  padding-inline: 0.5rem;
+  color: #fff;
+}
+
+/* Big centered verdict at the top of the panel (Safe / Risky / Dangerous) */
+.results-status {
+  margin: 0.5rem 0 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* Verdict colors: rain in the window -> dark pink, dry -> bright pink */
+.results-status--danger,
+.results-status--caution {
+  color: #a3245e;
+}
+
+.results-status--safe {
+  color: #ff3d9a;
+}
+
+/* Extra line under the status (e.g. why the check couldn't run) */
+.results-message {
+  margin: 0.5rem 0 0;
+  font-size: 14px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.results-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+/* Label on the left, value on the right */
+.results-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.results-row dt {
+  min-width: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.results-row dd {
+  margin: 0;
+  font-size: 16px;
+  text-align: right;
+}
+
+/* ---- Recommend results: three cards filling the glass panel ---- */
+
+.outage-results--cards {
+  gap: 0.75rem;
+  height: 100%;
+  padding-inline: 0;
+}
+
+.rec-card {
+  /* [icon] [date + time] [rain amount / chance] */
+  flex: 1;
+  min-height: 0;
+  max-height: calc((100% - 1.5rem) / 3); /* stays a third of the panel even with fewer than 3 */
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  column-gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  background: rgb(255 255 255 / 18%);
+  border: 0.5px solid rgb(255 255 255 / 70%);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+button.rec-card:hover {
+  background: rgb(255 255 255 / 28%);
+}
+
+.rec-card:focus-visible,
+.rec-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.rec-icon {
+  grid-row: 1 / -1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px dashed rgb(255 255 255 / 55%);
+  border-radius: 50%;
+}
+
+/* Once there's an icon in the slot, drop the placeholder circle */
+.rec-icon:not(:empty) {
+  border: 0;
+}
+
+.rec-icon > * {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.rec-date {
+  grid-row: 1 / -1;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.rec-amount,
+.rec-chance {
+  grid-column: 3;
+  font-size: 15px;
+  text-align: right;
+}
+
+.rec-amount {
+  grid-row: 1;
+  align-self: end;
+}
+
+.rec-chance {
+  grid-row: 2;
+  align-self: start;
+}
+
+/* Note under the cards, e.g. "Only 2 days had a window under the threshold." */
+.rec-note {
+  margin: 0;
+}
+
+/* Expanded: one card fills the panel, stacked top to bottom */
+.rec-card--expanded {
+  max-height: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1rem;
+  cursor: default;
+}
+
+.rec-card--expanded .results-list {
+  align-self: stretch;
+}
+
+.rec-icon--large {
+  width: 72px;
+  height: 72px;
+}
+
+.rec-date--large {
+  margin: 0;
+  font-size: 20px;
+  text-align: center;
+}
+
+.rec-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: #fff;
+  background: rgb(255 255 255 / 18%);
+  border: 0.5px solid rgb(255 255 255 / 70%);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.rec-close:hover {
+  background: rgb(255 255 255 / 30%);
+}

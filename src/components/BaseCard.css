@@ -1,0 +1,248 @@
+/* Card sizes */
+.base-card {
+  --page-width: 360px;      
+  --card-height: 560px;     
+  --card-padding: 1.5rem;   /* gap between the glass panel and the card's side edges */
+  --divider-gap: 1rem;      
+
+  --panel-top: 120px;
+  --panel-bottom: 100px;
+}
+
+/* shrink the gaps on short screens so glass panel remains readable */
+@media (max-height: 520px) {
+  .base-card {
+    --panel-top: 88px;
+    --panel-bottom: 72px;
+  }
+}
+
+.base-card {
+  /* small screens only show one at a time */
+  display: grid;
+  grid-template-columns: 1fr;
+  /* Rows: title area | glass panels | bottom area (future button).
+     Measured from the card's outer edge, so subtract the card's own padding. */
+  grid-template-rows:
+    calc(var(--panel-top) - var(--card-padding))
+    minmax(0, 1fr)
+    calc(var(--panel-bottom) - var(--card-padding));
+  width: min(100%, var(--page-width));
+  --shown-height: min(var(--card-height), calc(100svh - 3rem));
+  height: var(--shown-height);
+  padding: var(--card-padding);
+
+  /* Animated sky: a seamless tile repeated side by side, scaled to the card's height,
+     sliding left to right. One loop moves exactly one tile width (the tile is 16:9),
+     so the jump back to the start lines up and the scroll looks endless. */
+  --sky-tile-width: calc(var(--shown-height) * 16 / 9);
+  background-color: #cfb4c0; /* shows while the image loads */
+  /* background-image: url('/backgrounds/Free-Sky-with-Clouds-Pixel-Seamless-Backgrounds4-tile.png'); */
+  background-image: url('/backgrounds/cloudy/SeamlessCloudBackgroun.png');
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  background-origin: border-box; /* size the tile to the full card height, border included */
+  animation: card-sky-slide 90s linear infinite;
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgb(0 0 0 / 20%);
+  backdrop-filter: blur(12px);
+}
+
+@keyframes card-sky-slide {
+  from {
+    background-position-x: 0;
+  }
+
+  to {
+    background-position-x: var(--sky-tile-width);
+  }
+}
+
+/* Hold the sky still for people who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .base-card {
+    animation: none;
+  }
+}
+
+/* Title row: [arrow slot] [title] [arrow slot], with breathing room between them */
+.card-header {
+  --arrow-size: 36px;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: var(--arrow-size) minmax(0, 1fr) var(--arrow-size);
+  column-gap: 0.75rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.card-title {
+  grid-column: 2;
+  margin: 0;
+  color: #fff;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.card-arrow {
+  display: grid;
+  place-items: center;
+  width: var(--arrow-size);
+  height: var(--arrow-size);
+  padding: 0;
+  color: #fff;
+  background: rgb(255 255 255 / 18%);
+  border: 0.5px solid rgb(255 255 255 / 70%);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.card-arrow:hover {
+  background: rgb(255 255 255 / 30%);
+}
+
+.card-arrow:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.card-arrow--prev,
+.card-arrow--back {
+  grid-column: 1;
+}
+
+.card-arrow--next {
+  grid-column: 3;
+}
+
+.card-page {
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.card-header--left,
+.card-page--left,
+.card-footer--left {
+  grid-column: 1;
+}
+
+.card-header--right,
+.card-page--right,
+.card-footer--right {
+  grid-column: 3;
+}
+
+/* Bottom area: negative margin so that the center is measured to the card edge not padding */
+.card-footer {
+  grid-row: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  margin-bottom: calc(-1 * var(--card-padding));
+}
+
+.card-divider {
+  /* Spans the glass area so it looks like the panels shared edge */
+  grid-row: 2;
+  width: 1px;
+  background-color: rgb(50 32 40 / 25%);
+}
+
+/* Narrow screens: show one card at a time, no divider */
+.card-divider,
+.card-header--right,
+.card-page--right,
+.card-footer--right {
+  display: none;
+}
+
+/* Narrow screens, second card selected: swap which card is visible */
+.base-card--show-right .card-header--left,
+.base-card--show-right .card-page--left,
+.base-card--show-right .card-footer--left {
+  display: none;
+}
+
+.base-card--show-right .card-header--right {
+  display: grid;
+  grid-column: 1;
+}
+
+.base-card--show-right .card-page--right,
+.base-card--show-right .card-footer--right {
+  display: flex;
+  grid-column: 1;
+}
+
+/* Wide enough for two cards: unfolded foldables, tablets, desktops */
+@media (min-width: 600px) {
+  .base-card {
+    grid-template-columns: 1fr auto 1fr;
+    column-gap: var(--divider-gap);
+    width: min(100%, calc(var(--page-width) * 2 + var(--divider-gap) * 2));
+  }
+  
+  /* Title rows stay single-page width (the same as the single-panel layout below), so a
+     title that wraps to two lines keeps wrapping when the card goes from one panel to two */
+  .base-card .card-header--left,
+  .base-card .card-header--right {
+    display: grid;
+    justify-self: center;
+    width: min(100%, calc(var(--page-width) - 2 * var(--card-padding)));
+  }
+
+  .base-card .card-page--left,
+  .base-card .card-page--right,
+  .base-card .card-footer--left,
+  .base-card .card-footer--right {
+    display: flex;
+  }
+
+  .base-card .card-header--right,
+  .base-card .card-page--right,
+  .base-card .card-footer--right {
+    grid-column: 3;
+  }
+
+  .card-divider {
+    display: block;
+  }
+
+  /* hide when arrows are not needed */
+  .card-arrow {
+    display: none;
+  }
+
+  /* ...except the back arrow, which is needed at every width */
+  .card-arrow.card-arrow--back {
+    display: grid;
+  }
+}
+
+/* Single centered panel (main menu, settings): on wide screens there's no divider or
+   right side. The card keeps its full two-page width; the left page spans both columns
+   and is centered at single-page width. (.base-card.base-card--single beats the wide rules.) */
+@media (min-width: 600px) {
+  .base-card.base-card--single .card-divider,
+  .base-card.base-card--single .card-header--right,
+  .base-card.base-card--single .card-page--right,
+  .base-card.base-card--single .card-footer--right {
+    display: none;
+  }
+
+  .base-card.base-card--single .card-header--left,
+  .base-card.base-card--single .card-page--left,
+  .base-card.base-card--single .card-footer--left {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: min(100%, calc(var(--page-width) - 2 * var(--card-padding)));
+  }
+}

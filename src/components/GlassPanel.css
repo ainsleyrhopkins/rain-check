@@ -1,0 +1,61 @@
+.glass-panel {
+  flex: 1;
+  min-height: 0;
+  padding: 1rem;
+  border-radius: 16px;
+
+  /* Very thin white border */
+  border: 0.5px solid rgb(255 255 255 / 70%);
+
+  /* Glass: translucent #EFD2CB tint + soft top-left sheen + frosted blur */
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 30%), rgb(255 255 255 / 0%) 55%),
+    rgb(239 210 203 / 35%); /* #EFD2CB */
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+
+  /* Thin inner highlight on the top edge + gentle drop shadow to set it into the card */
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 45%),
+    0 8px 24px rgb(50 32 40 / 12%);
+
+  /* Long content scrolls inside the panel, not the whole site */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Scrollbar: slim, translucent white to match the glass, kept clear of the rounded corners.
+   Chrome/Edge/Safari use the ::-webkit-scrollbar rules (which allow the corner margin);
+   Firefox only understands scrollbar-width/-color, so those are given to it alone
+   (setting them in Chrome would switch off the ::-webkit-scrollbar styling). */
+.glass-panel::-webkit-scrollbar {
+  width: 10px;
+}
+
+.glass-panel::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 14px; /* stay inside the 16px rounded corners */
+}
+
+.glass-panel::-webkit-scrollbar-thumb {
+  /* the transparent border + padding-box clip makes a thinner bar inset from the edge */
+  background-color: rgb(255 255 255 / 55%);
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+
+.glass-panel::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(255 255 255 / 80%);
+}
+
+.glass-panel::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .glass-panel {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 55%) transparent;
+  }
+}

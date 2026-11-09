@@ -1,0 +1,35 @@
+.card-button {
+  /* fills almost the width of the card */
+  width: calc(100% - 2rem);
+  height: 48px;
+  padding: 0 1.25rem;
+  background-color: #9a9ccc;
+  color: #f8f7f7;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  border: 0.5px solid rgb(255 255 255 / 70%);
+  border-radius: 999px; /* pill */
+  /* box-shadow: 0 6px 16px rgb(50 32 40 / 18%); */
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.card-button:hover {
+  background-color: #a9abd6;
+}
+
+.card-button:active {
+  transform: scale(0.98);
+}
+
+.card-button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.card-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}

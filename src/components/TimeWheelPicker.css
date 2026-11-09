@@ -1,0 +1,126 @@
+.time-dialog {
+  width: min(320px, calc(100vw - 2rem));
+  padding: 0;
+  color: #322028;
+  background: #fff;
+  border: 0;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgb(50 32 40 / 35%);
+}
+
+.time-dialog::backdrop {
+  background: rgb(50 32 40 / 45%);
+  backdrop-filter: blur(2px);
+}
+
+.time-dialog-body {
+  padding: 1.25rem;
+}
+
+.time-dialog-title {
+  margin: 0 0 0.75rem;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ---- The wheel ---- */
+
+.wheel {
+  --wheel-item: 40px; /* keep in sync with ITEM_HEIGHT in TimeWheelPicker.jsx */
+
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: calc(var(--wheel-item) * 5);
+}
+
+/* Highlight band behind the selected row */
+.wheel-band {
+  position: absolute;
+  top: calc(var(--wheel-item) * 2);
+  left: 0;
+  right: 0;
+  height: var(--wheel-item);
+  background: #f3eef0;
+  border-radius: 12px;
+}
+
+.wheel-column {
+  position: relative; /* sits above the band */
+  width: 68px;
+  height: 100%;
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
+  /* Lets the first/last rows reach the middle band */
+  padding-block: calc(var(--wheel-item) * 2);
+  /* Rows fade out toward the top and bottom */
+  mask-image: linear-gradient(to bottom, transparent, #000 35%, #000 65%, transparent);
+  scrollbar-width: none;
+  outline: none;
+  cursor: grab;
+}
+
+.wheel-column::-webkit-scrollbar {
+  display: none;
+}
+
+.wheel-column:focus-visible {
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 2px #9a9ccc;
+}
+
+.wheel-item {
+  display: grid;
+  place-items: center;
+  height: var(--wheel-item);
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+  scroll-snap-align: center;
+  user-select: none;
+}
+
+.wheel-colon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 12px;
+  font-size: 26px;
+}
+
+/* ---- Buttons ---- */
+
+.time-dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.time-dialog-actions .card-button {
+  flex: 1;
+  width: auto;
+  height: 44px;
+}
+
+.time-dialog-cancel {
+  flex: 1;
+  height: 44px;
+  color: #322028;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid #d9cdd2;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.time-dialog-cancel:hover {
+  background: #f6f1f3;
+}
+
+.time-dialog-cancel:focus-visible {
+  outline: 2px solid #9a9ccc;
+  outline-offset: 2px;
+}

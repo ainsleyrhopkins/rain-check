@@ -1,0 +1,14 @@
+.cloud-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  /* keep content clear of the cloud's bumpy edges */
+  padding: 2rem 1rem;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
