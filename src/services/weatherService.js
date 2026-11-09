@@ -5,7 +5,7 @@
 const MS_PER_HOUR = 60 * 60 * 1000;
 const MM_PER_INCH = 25.4;
 
-//get the forecast frid data 
+//get the forecast grid data 
 async function fetchNWSData(latitude, longitude) {
     const pointResponse = await fetch(`https://api.weather.gov/points/${latitude},${longitude}`);
     if (!pointResponse.ok) {
@@ -153,7 +153,7 @@ function atTime(day, hhmm) {
     return date;
 }
 
-// Does from–to touch business hours on any Monday–Friday? (Weekends are always free.)
+// Only considers weekdays
 // If the end time is at or before the start time, business hours run past midnight
 // (e.g. 22:00–06:00 is Mon 10 PM to Tue 6 AM).
 function overlapsBusinessHours(from, to, startHHMM, endHHMM) {
