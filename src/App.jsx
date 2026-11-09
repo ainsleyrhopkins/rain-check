@@ -12,6 +12,14 @@ import { loadSettings, saveSettings } from './services/settingsStorage'
 import { confirmOutage, getBrowserLocation, recommendOutage } from './services/weatherService'
 import { formatDayTime, formatTimeRange } from './components/outageOptions'
 
+// { time, side } -> 'During window' (rain inside the window), 'Ends Tue, Nov 10, 3:00 PM'
+// (rain before the window) or 'Starts …' (rain after it)
+function formatClosestRain(rain) {
+  if (!rain) return 'None in forecast'
+  if (rain.side === 'during') return 'During window'
+  return `${rain.side === 'before' ? 'Ends' : 'Starts'} ${formatDayTime(rain.time)}`
+}
+
 function App() {
   // Which screen is showing: 'menu' (start), 'confirm', 'recommend' or 'settings'.
   const [screen, setScreen] = useState('menu')
@@ -76,7 +84,9 @@ function App() {
     try {
       const location = await getLocation()
       const result = await confirmOutage({ ...location, ...details })
-      if (request === confirmRequest.current) setConfirmResult(result)
+      if (request === confirmRequest.current) {
+        setConfirmResult({ ...result, closestRain: formatClosestRain(result.closestRain) })
+      }
     } catch (error) {
       console.error('Confirm outage failed:', error)
       if (request === confirmRequest.current) {
@@ -129,9 +139,7 @@ function App() {
           dateTime: formatTimeRange(rec.start, rec.end) + (rec.preferred ? ' ★' : ''),
           rainAmount: rec.rainAmount,
           rainChance: rec.rainChance,
-          closestRain: rec.closestRain
-            ? `${rec.closestRain.side === 'before' ? 'Ends' : 'Starts'} ${formatDayTime(rec.closestRain.time)}`
-            : 'None in forecast',
+          closestRain: formatClosestRain(rec.closestRain),
         })),
       })
     } catch (error) {

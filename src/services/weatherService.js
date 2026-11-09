@@ -57,7 +57,8 @@ const maxValue = blocks => blocks.reduce((max, block) => Math.max(max, block.val
  *
  * Returns { status: 'Danger' | 'Caution' | 'Safe',
  *           rainAmount (inches, total across buffer + outage + buffer),
- *           rainChance (0–100, the highest chance in the window) }
+ *           rainChance (0–100, the highest chance in the window),
+ *           closestRain ({ time, side: 'before' | 'after' } or null; see closestRain below) }
  */
 export async function confirmOutage({ latitude, longitude, date, startTime, duration, buffer, threshold }) {
     const outageStart = new Date(`${date}T${startTime}`);
@@ -85,7 +86,13 @@ export async function confirmOutage({ latitude, longitude, date, startTime, dura
     if (rainAmount >= threshold) status = 'Danger';
     else if (rainAmount > 0) status = 'Caution';
 
-    return { status, rainAmount, rainChance: Math.round(rainChance) };
+    return {
+        status,
+        rainAmount,
+        rainChance: Math.round(rainChance),
+        // Same rule as recommendOutage: nearest rain before or after the window
+        closestRain: closestRain(rainEvents(toBlocks(rainfall)), windowStart, windowEnd),
+    };
 }
 
 /* ---------------- Recommend an outage ---------------- */
@@ -120,16 +127,19 @@ function rainEvents(rainBlocks) {
     return events;
 }
 
-// The rain event nearest the window, before or after it: { time, side: 'before' | 'after' }, or null.
+// The rain event closest to the window: { time, side: 'during' | 'before' | 'after' }, or null if none.
+//   during: rain is forecast inside the window itself (time is when that rain starts, or the
+//           window start if it was already raining); this wins over any rain outside the window.
 //   before: time is when that rain ends; after: time is when it starts.
-// Events that overlap the window are skipped; that rain is already in the window's amount.
 function closestRain(events, from, to) {
+    const during = events.find(event => event.start < to && event.end > from);
+    if (during) return { time: new Date(Math.max(during.start, from)), side: 'during' };
+
     let best = null;
     for (const event of events) {
         let distance, side, time;
         if (event.end <= from) { distance = from - event.end; side = 'before'; time = event.end; }
-        else if (event.start >= to) { distance = event.start - to; side = 'after'; time = event.start; }
-        else continue;
+        else { distance = event.start - to; side = 'after'; time = event.start; }
         if (!best || distance < best.distance) best = { time, side, distance };
     }
     return best && { time: best.time, side: best.side };

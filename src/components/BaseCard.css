@@ -21,7 +21,7 @@
   /* small screens only show one at a time */
   display: grid;
   grid-template-columns: 1fr;
-  /* Rows: title area | glass panels | bottom area (future button).
+  /* Rows: title area | glass panels | bottom area with button
      Measured from the card's outer edge, so subtract the card's own padding. */
   grid-template-rows:
     calc(var(--panel-top) - var(--card-padding))
@@ -32,16 +32,14 @@
   height: var(--shown-height);
   padding: var(--card-padding);
 
-  /* Animated sky: a seamless tile repeated side by side, scaled to the card's height,
-     sliding left to right. One loop moves exactly one tile width (the tile is 16:9),
-     so the jump back to the start lines up and the scroll looks endless. */
+  /* cloud animation */
   --sky-tile-width: calc(var(--shown-height) * 16 / 9);
   background-color: #cfb4c0; /* shows while the image loads */
   /* background-image: url('/backgrounds/Free-Sky-with-Clouds-Pixel-Seamless-Backgrounds4-tile.png'); */
   background-image: url('/backgrounds/cloudy/SeamlessCloudBackgroun.png');
   background-repeat: repeat-x;
   background-size: auto 100%;
-  background-origin: border-box; /* size the tile to the full card height, border included */
+  background-origin: border-box; 
   animation: card-sky-slide 90s linear infinite;
   border: 1px solid rgb(255 255 255 / 35%);
   border-radius: 12px;
@@ -59,7 +57,6 @@
   }
 }
 
-/* Hold the sky still for people who ask for less motion */
 @media (prefers-reduced-motion: reduce) {
   .base-card {
     animation: none;
@@ -216,20 +213,17 @@
     display: block;
   }
 
-  /* hide when arrows are not needed */
+  /* hide all except the back arrow when not needed */
   .card-arrow {
     display: none;
   }
 
-  /* ...except the back arrow, which is needed at every width */
   .card-arrow.card-arrow--back {
     display: grid;
   }
 }
 
-/* Single centered panel (main menu, settings): on wide screens there's no divider or
-   right side. The card keeps its full two-page width; the left page spans both columns
-   and is centered at single-page width. (.base-card.base-card--single beats the wide rules.) */
+/* Single centered panel  for  menu and settings */
 @media (min-width: 600px) {
   .base-card.base-card--single .card-divider,
   .base-card.base-card--single .card-header--right,
